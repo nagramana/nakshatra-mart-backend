@@ -3,30 +3,41 @@ const router = express.Router();
 
 const Order = require("../models/Order");
 
-// ==========================
+// ===================================
 // Create Order
-// ==========================
+// ===================================
 router.post("/", async (req, res) => {
   try {
+    console.log("Incoming Order:");
+    console.log(req.body);
+
     const order = new Order(req.body);
 
-    await order.save();
+    const savedOrder =
+      await order.save();
 
     res.status(201).json({
       success: true,
-      order,
+      order: savedOrder,
     });
   } catch (error) {
+    console.error(
+      "Order Save Error:"
+    );
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: error.message,
+      message:
+        error.message,
+      error,
     });
   }
 });
 
-// ==========================
+// ===================================
 // Get All Orders
-// ==========================
+// ===================================
 router.get("/", async (req, res) => {
   try {
     const orders =
@@ -37,14 +48,15 @@ router.get("/", async (req, res) => {
     res.json(orders);
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message:
+        error.message,
     });
   }
 });
 
-// ==========================
+// ===================================
 // Get Single Order
-// ==========================
+// ===================================
 router.get("/:id", async (req, res) => {
   try {
     const order =
@@ -52,17 +64,27 @@ router.get("/:id", async (req, res) => {
         req.params.id
       );
 
+    if (!order) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "Order not found",
+        });
+    }
+
     res.json(order);
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message:
+        error.message,
     });
   }
 });
 
-// ==========================
-// Update Status
-// ==========================
+// ===================================
+// Update Order Status
+// ===================================
 router.put(
   "/status/:id",
   async (req, res) => {
@@ -72,7 +94,8 @@ router.put(
           req.params.id,
           {
             orderStatus:
-              req.body.orderStatus,
+              req.body
+                .orderStatus,
           },
           {
             new: true,
@@ -82,15 +105,16 @@ router.put(
       res.json(order);
     } catch (error) {
       res.status(500).json({
-        message: error.message,
+        message:
+          error.message,
       });
     }
   }
 );
 
-// ==========================
+// ===================================
 // Request Return
-// ==========================
+// ===================================
 router.put(
   "/return/:id",
   async (req, res) => {
@@ -113,15 +137,16 @@ router.put(
       res.json(order);
     } catch (error) {
       res.status(500).json({
-        message: error.message,
+        message:
+          error.message,
       });
     }
   }
 );
 
-// ==========================
+// ===================================
 // Approve Return
-// ==========================
+// ===================================
 router.put(
   "/approve-return/:id",
   async (req, res) => {
@@ -143,15 +168,16 @@ router.put(
       res.json(order);
     } catch (error) {
       res.status(500).json({
-        message: error.message,
+        message:
+          error.message,
       });
     }
   }
 );
 
-// ==========================
+// ===================================
 // Reject Return
-// ==========================
+// ===================================
 router.put(
   "/reject-return/:id",
   async (req, res) => {
@@ -171,7 +197,33 @@ router.put(
       res.json(order);
     } catch (error) {
       res.status(500).json({
-        message: error.message,
+        message:
+          error.message,
+      });
+    }
+  }
+);
+
+// ===================================
+// Delete Order
+// ===================================
+router.delete(
+  "/:id",
+  async (req, res) => {
+    try {
+      await Order.findByIdAndDelete(
+        req.params.id
+      );
+
+      res.json({
+        success: true,
+        message:
+          "Order deleted",
+      });
+    } catch (error) {
+      res.status(500).json({
+        message:
+          error.message,
       });
     }
   }

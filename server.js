@@ -10,32 +10,17 @@ const productRoutes = require("./routes/productRoutes");
 const app = express();
 
 // Middleware
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://your-admin-vercel.vercel.app",
-      "https://your-user-vercel.vercel.app",
-    ],
-    methods: [
-      "GET",
-      "POST",
-      "PUT",
-      "DELETE",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
-    console.log("✅ MongoDB Connected");
+    console.log("✅ MongoDB Connected Successfully");
   })
   .catch((err) => {
-    console.log("❌ MongoDB Error:", err);
+    console.log("❌ MongoDB Connection Error:", err);
   });
 
 // Routes
@@ -45,6 +30,14 @@ app.use("/api/products", productRoutes);
 // Test Route
 app.get("/", (req, res) => {
   res.send("Nakshatra Backend Running");
+});
+
+// Health Check
+app.get("/api/test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Backend Working",
+  });
 });
 
 // Start Server

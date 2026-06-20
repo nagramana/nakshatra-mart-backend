@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const uploadRoutes = require("./routes/uploadRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -19,9 +20,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use(
-  express.urlencoded({
-    extended: true,
-  })
+express.urlencoded({
+extended: true,
+})
 );
 
 // ==========================
@@ -29,66 +30,71 @@ app.use(
 // ==========================
 
 mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => {
-    console.log(
-      "✅ MongoDB Connected Successfully"
-    );
-  })
-  .catch((err) => {
-    console.log(
-      "❌ MongoDB Connection Error:",
-      err
-    );
-  });
+.connect(process.env.MONGO_URL)
+.then(() => {
+console.log(
+"✅ MongoDB Connected Successfully"
+);
+})
+.catch((err) => {
+console.log(
+"❌ MongoDB Connection Error:",
+err
+);
+});
 
 // ==========================
 // Root Route
 // ==========================
 
 app.get("/", (req, res) => {
-  res.send(
-    "Nakshatra Backend Running"
-  );
+res.send(
+"Nakshatra Backend Running"
+);
 });
 
 // ==========================
-// Test Route
+// Health Check Route
 // ==========================
 
 app.get(
-  "/api/test",
-  (req, res) => {
-    res.json({
-      success: true,
-      message:
-        "Backend Working",
-      database:
-        mongoose.connection
-          .readyState === 1
-          ? "Connected"
-          : "Disconnected",
-    });
-  }
+"/api/test",
+(req, res) => {
+res.json({
+success: true,
+message:
+"Backend Working",
+database:
+mongoose.connection
+.readyState === 1
+? "Connected"
+: "Disconnected",
+});
+}
 );
 
 // ==========================
-// Routes
+// API Routes
 // ==========================
 
 app.use(
-  "/api",
-  uploadRoutes
+"/api",
+uploadRoutes
 );
 
 app.use(
-  "/api/products",
-  productRoutes
+"/api/products",
+productRoutes
 );
 
 app.use(
-  "/api/orders",
-  orderRoutes
+"/api/orders",
+orderRoutes
+);
+
+app.use(
+"/api/users",
+userRoutes
 );
 
 // ==========================
@@ -96,11 +102,11 @@ app.use(
 // ==========================
 
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message:
-      "Route Not Found",
-  });
+res.status(404).json({
+success: false,
+message:
+"Route Not Found",
+});
 });
 
 // ==========================
@@ -108,10 +114,10 @@ app.use((req, res) => {
 // ==========================
 
 const PORT =
-  process.env.PORT || 5000;
+process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(
-    `🚀 Server running on port ${PORT}`
-  );
+console.log(
+`🚀 Server running on port ${PORT}`
+);
 });

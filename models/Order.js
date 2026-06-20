@@ -27,17 +27,22 @@ const OrderSchema =
 
     paymentMethod: String,
 
-    orderStatus: {
-      type: String,
-      default: "Order Placed",
-    },
+   orderStatus: {
+  type: String,
+  default: "Order Placed",
+},
 
-    progress: {
-      type: Number,
-      default: 25,
-    },
+progress: {
+  type: Number,
+  default: 25,
+},
 
-    trackingSteps: [String],
+deliveredAt: {
+  type: Date,
+  default: null,
+},
+
+trackingSteps: [String],
 
     returnEligible: {
   type: Boolean,
@@ -64,6 +69,16 @@ returnRequestedAt: {
 returnActionAt: {
   type: Date,
   default: null,
+},
+
+rating: {
+  type: Number,
+  default: 0,
+},
+
+review: {
+  type: String,
+  default: "",
 },
 
 createdAt: {

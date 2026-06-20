@@ -105,16 +105,61 @@ router.get("/:id", async (req, res) => {
 // Update Order Status
 // ===================================
 router.put(
-  "/status/:id",
+  "/return/:id",
   async (req, res) => {
     try {
+      const existingOrder =
+        await Order.findById(
+          req.params.id
+        );
+
+      if (!existingOrder) {
+        return res.status(404).json({
+          message:
+            "Order not found",
+        });
+      }
+
+      if (
+        !existingOrder.deliveredAt
+      ) {
+        return res.status(400).json({
+          message:
+            "Order not delivered yet",
+        });
+      }
+
+      const days =
+        (new Date() -
+          new Date(
+            existingOrder.deliveredAt
+          )) /
+        (1000 *
+          60 *
+          60 *
+          24);
+
+      if (days > 7) {
+        return res.status(400).json({
+          message:
+            "Return period expired",
+        });
+      }
+
       const order =
         await Order.findByIdAndUpdate(
           req.params.id,
           {
-            orderStatus:
-              req.body
-                .orderStatus,
+            returnRequested: true,
+
+            returnStatus:
+              "Pending",
+
+            returnReason:
+              req.body.reason,
+
+            returnRequestedAt:
+              new Date(),
           },
           {
             new: true,
@@ -134,33 +179,33 @@ router.put(
 // ===================================
 // Request Return
 // ===================================
-router.put(
-  "/return/:id",
-  async (req, res) => {
-    try {
-      const order =
-        await Order.findByIdAndUpdate(
-          req.params.id,
-          {
-  returnRequested: true,
-  returnStatus: "Pending",
-  returnReason: req.body.reason,
-  returnRequestedAt: new Date(),
-},
-          {
-            new: true,
-          }
-        );
+// router.put(
+//   "/return/:id",
+//   async (req, res) => {
+//     try {
+//       const order =
+//         await Order.findByIdAndUpdate(
+//           req.params.id,
+//           {
+//             returnRequested: true,
+//             returnStatus: "Pending",
+//             returnReason: req.body.reason,
+//             returnRequestedAt: new Date(),
+//           },
+//           {
+//             new: true,
+//           }
+//         );
 
-      res.json(order);
-    } catch (error) {
-      res.status(500).json({
-        message:
-          error.message,
-      });
-    }
-  }
-);
+//       res.json(order);
+//     } catch (error) {
+//       res.status(500).json({
+//         message:
+//           error.message,
+//       });
+//     }
+//   }
+// );
 
 // ===================================
 // Approve Return
@@ -289,6 +334,51 @@ router.put(
 );
 
 // ===================================
+// Update Order Status
+// ===================================
+router.put(
+  "/status/:id",
+  async (req, res) => {
+    try {
+      const { orderStatus } =
+        req.body;
+
+      const order =
+        await Order.findById(
+          req.params.id
+        );
+
+      if (!order) {
+        return res.status(404).json({
+          message:
+            "Order not found",
+        });
+      }
+
+      order.orderStatus =
+        orderStatus;
+
+      if (
+        orderStatus ===
+        "Delivered"
+      ) {
+        order.deliveredAt =
+          new Date();
+      }
+
+      await order.save();
+
+      res.json(order);
+    } catch (error) {
+      res.status(500).json({
+        message:
+          error.message,
+      });
+    }
+  }
+);
+
+// ===================================
 // Delete Order
 // ===================================
 router.delete(
@@ -301,16 +391,15 @@ router.delete(
 
       res.json({
         success: true,
-        message:
-          "Order deleted",
+        message: "Order deleted",
       });
     } catch (error) {
       res.status(500).json({
-        message:
-          error.message,
+        message: error.message,
       });
     }
   }
 );
+
 
 module.exports = router;

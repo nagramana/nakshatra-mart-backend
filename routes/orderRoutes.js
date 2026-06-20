@@ -54,6 +54,25 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+
+// router.delete("/:id", async (req, res) => {
+//   try {
+//     await Order.findByIdAndDelete(
+//       req.params.id
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Order deleted",
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// });
 // ===================================
 // Get Single Order
 // ===================================
@@ -123,12 +142,11 @@ router.put(
         await Order.findByIdAndUpdate(
           req.params.id,
           {
-            returnRequested: true,
-            returnStatus:
-              "Pending",
-            returnReason:
-              req.body.reason,
-          },
+  returnRequested: true,
+  returnStatus: "Pending",
+  returnReason: req.body.reason,
+  returnRequestedAt: new Date(),
+},
           {
             new: true,
           }
@@ -147,6 +165,37 @@ router.put(
 // ===================================
 // Approve Return
 // ===================================
+// router.put(
+//   "/approve-return/:id",
+//   async (req, res) => {
+//     try {
+//       const order =
+//         await Order.findByIdAndUpdate(
+//           req.params.id,
+//           {
+//   returnStatus: "Approved",
+//   orderStatus: "Order Returned",
+//   returnActionAt: new Date(),
+// },
+//           {
+//   returnStatus: "Rejected",
+//   returnActionAt: new Date(),
+// }
+//         );
+
+//       res.json(order);
+//     } catch (error) {
+//       res.status(500).json({
+//         message:
+//           error.message,
+//       });
+//     }
+//   }
+// );
+
+// ===================================
+// Approve Return
+// ===================================
 router.put(
   "/approve-return/:id",
   async (req, res) => {
@@ -157,8 +206,12 @@ router.put(
           {
             returnStatus:
               "Approved",
+
             orderStatus:
               "Order Returned",
+
+            returnActionAt:
+              new Date(),
           },
           {
             new: true,
@@ -178,6 +231,34 @@ router.put(
 // ===================================
 // Reject Return
 // ===================================
+// router.put(
+//   "/reject-return/:id",
+//   async (req, res) => {
+//     try {
+//       const order =
+//         await Order.findByIdAndUpdate(
+//           req.params.id,
+//           {
+//             returnStatus:
+//               "Rejected",
+//           },
+//           {
+//             new: true,
+//           }
+//         );
+
+//       res.json(order);
+//     } catch (error) {
+//       res.status(500).json({
+//         message:
+//           error.message,
+//       });
+//     }
+//   }
+// );
+// ===================================
+// Reject Return
+// ===================================
 router.put(
   "/reject-return/:id",
   async (req, res) => {
@@ -188,6 +269,9 @@ router.put(
           {
             returnStatus:
               "Rejected",
+
+            returnActionAt:
+              new Date(),
           },
           {
             new: true,

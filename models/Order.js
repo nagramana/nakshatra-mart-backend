@@ -40,26 +40,36 @@ const OrderSchema =
     trackingSteps: [String],
 
     returnEligible: {
-      type: Boolean,
-      default: true,
-    },
+  type: Boolean,
+  default: true,
+},
 
-    returnRequested: {
-      type: Boolean,
-      default: false,
-    },
+returnRequested: {
+  type: Boolean,
+  default: false,
+},
 
-    returnStatus: {
-      type: String,
-      default: null,
-    },
+returnStatus: {
+  type: String,
+  default: null,
+},
 
-    returnReason: String,
+returnReason: String,
 
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+returnRequestedAt: {
+  type: Date,
+  default: null,
+},
+
+returnActionAt: {
+  type: Date,
+  default: null,
+},
+
+createdAt: {
+  type: Date,
+  default: Date.now,
+},
   });
 
 module.exports =

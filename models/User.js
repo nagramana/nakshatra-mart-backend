@@ -18,11 +18,6 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
 
-    phone: {
-      type: String,
-      default: "",
-    },
-
     status: {
       type: String,
       default: "Active",

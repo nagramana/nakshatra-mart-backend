@@ -111,6 +111,43 @@ const ProductSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+
+    // ===== HOME PAGE CONTROLS =====
+
+    showInFlashSale: {
+      type: Boolean,
+      default: false,
+    },
+
+    showInTrending: {
+      type: Boolean,
+      default: false,
+    },
+
+    showOnHomePage: {
+      type: Boolean,
+      default: true,
+    },
+
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+
+    bestSeller: {
+      type: Boolean,
+      default: false,
+    },
+
+    newArrival: {
+      type: Boolean,
+      default: true,
+    },
+
+    displayOrder: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

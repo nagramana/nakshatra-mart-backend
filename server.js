@@ -8,9 +8,10 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const userRoutes = require("./routes/userRoutes");
-
-// ✅ ADD THIS
 const categoryRoutes = require("./routes/categoryRoutes");
+
+// ✅ NEW
+const adRoutes = require("./routes/adRoutes");
 
 const app = express();
 
@@ -95,10 +96,15 @@ app.use(
   userRoutes
 );
 
-// ✅ CATEGORY ROUTE
 app.use(
   "/api/categories",
   categoryRoutes
+);
+
+// ✅ ADS ROUTE
+app.use(
+  "/api/ads",
+  adRoutes
 );
 
 // ==========================

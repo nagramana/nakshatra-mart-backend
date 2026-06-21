@@ -4,49 +4,82 @@ const router = express.Router();
 const Product = require("../models/Product");
 
 // ==========================
-// Add Product
+// ADD PRODUCT
 // ==========================
+
 router.post("/", async (req, res) => {
   try {
-    console.log("NEW PRODUCT:", req.body);
-
     const product = new Product({
       id: req.body.id,
+
       name: req.body.name,
+
       price: req.body.price,
+
       stock: req.body.stock,
+
       initialStock:
-        req.body.initialStock ||
-        req.body.stock,
+        req.body.initialStock || req.body.stock,
+
+      sold: 0,
+
+      active: true,
+
       category: req.body.category,
+
       gender:
         req.body.gender || "All",
+
+      color:
+        req.body.color || "",
+
+      fabric:
+        req.body.fabric || "",
+
+      size:
+        req.body.size || "",
+
+      rating:
+        req.body.rating || 4.3,
+
+      occasion:
+        req.body.occasion || "",
+
+      material:
+        req.body.material || "",
+
+      combo:
+        req.body.combo || "",
+
+      fitShape:
+        req.body.fitShape || "",
+
+      bottomLength:
+        req.body.bottomLength || "",
+
       description:
         req.body.description || "",
+
       discount:
         req.body.discount || "0% OFF",
+
       image: req.body.image,
     });
 
     await product.save();
 
-    res.status(201).json({
-      success: true,
-      product,
-    });
+    res.status(201).json(product);
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }
 });
 
 // ==========================
-// Get All Products
+// GET ALL PRODUCTS
 // ==========================
+
 router.get("/", async (req, res) => {
   try {
     const products =
@@ -54,18 +87,18 @@ router.get("/", async (req, res) => {
         createdAt: -1,
       });
 
-    res.status(200).json(products);
+    res.json(products);
   } catch (error) {
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }
 });
 
 // ==========================
-// Get Single Product
+// GET SINGLE PRODUCT
 // ==========================
+
 router.get("/:id", async (req, res) => {
   try {
     const product =
@@ -75,42 +108,28 @@ router.get("/:id", async (req, res) => {
 
     if (!product) {
       return res.status(404).json({
-        success: false,
-        message:
-          "Product Not Found",
+        message: "Product Not Found",
       });
     }
 
-    res.status(200).json(product);
+    res.json(product);
   } catch (error) {
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }
 });
 
 // ==========================
-// Update Product
+// UPDATE PRODUCT
 // ==========================
+
 router.put("/:id", async (req, res) => {
   try {
     const updatedProduct =
       await Product.findByIdAndUpdate(
         req.params.id,
-        {
-          name: req.body.name,
-          price: req.body.price,
-          stock: req.body.stock,
-          category: req.body.category,
-          gender:
-            req.body.gender,
-          description:
-            req.body.description,
-          discount:
-            req.body.discount,
-          image: req.body.image,
-        },
+        req.body,
         {
           new: true,
         }
@@ -118,28 +137,22 @@ router.put("/:id", async (req, res) => {
 
     if (!updatedProduct) {
       return res.status(404).json({
-        success: false,
-        message:
-          "Product Not Found",
+        message: "Product Not Found",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      product:
-        updatedProduct,
-    });
+    res.json(updatedProduct);
   } catch (error) {
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }
 });
 
 // ==========================
-// Delete Product
+// DELETE PRODUCT
 // ==========================
+
 router.delete("/:id", async (req, res) => {
   try {
     const deletedProduct =
@@ -149,20 +162,17 @@ router.delete("/:id", async (req, res) => {
 
     if (!deletedProduct) {
       return res.status(404).json({
-        success: false,
-        message:
-          "Product Not Found",
+        message: "Product Not Found",
       });
     }
 
-    res.status(200).json({
+    res.json({
       success: true,
       message:
         "Product Deleted Successfully",
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }

@@ -2,60 +2,21 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true,
-    },
+    id: String,
 
     name: {
       type: String,
       required: true,
-      trim: true,
     },
 
     price: {
       type: Number,
       required: true,
-      default: 0,
     },
 
     stock: {
       type: Number,
       default: 0,
-    },
-
-    category: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    gender: {
-      type: String,
-      default: "All",
-      enum: [
-        "All",
-        "Men",
-        "Women",
-        "Boys",
-        "Girls",
-      ],
-    },
-
-    description: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    discount: {
-      type: String,
-      default: "0% OFF",
-    },
-
-    image: {
-      type: String,
-      required: true,
     },
 
     initialStock: {
@@ -71,6 +32,76 @@ const ProductSchema = new mongoose.Schema(
     active: {
       type: Boolean,
       default: true,
+    },
+
+    category: {
+      type: String,
+      required: true,
+    },
+
+    gender: {
+      type: String,
+      default: "All",
+    },
+
+    color: {
+      type: String,
+      default: "",
+    },
+
+    fabric: {
+      type: String,
+      default: "",
+    },
+
+    size: {
+      type: String,
+      default: "",
+    },
+
+    rating: {
+      type: Number,
+      default: 4.3,
+    },
+
+    occasion: {
+      type: String,
+      default: "",
+    },
+
+    material: {
+      type: String,
+      default: "",
+    },
+
+    combo: {
+      type: String,
+      default: "",
+    },
+
+    fitShape: {
+      type: String,
+      default: "",
+    },
+
+    bottomLength: {
+      type: String,
+      default: "",
+    },
+
+    description: {
+      type: String,
+      default: "",
+    },
+
+    discount: {
+      type: String,
+      default: "0% OFF",
+    },
+
+    image: {
+      type: String,
+      required: true,
     },
   },
   {

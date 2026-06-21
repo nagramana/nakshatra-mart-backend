@@ -19,7 +19,8 @@ router.post("/", async (req, res) => {
       stock: req.body.stock,
 
       initialStock:
-        req.body.initialStock || req.body.stock,
+        req.body.initialStock ||
+        req.body.stock,
 
       sold: 0,
 
@@ -40,7 +41,7 @@ router.post("/", async (req, res) => {
         req.body.size || "",
 
       rating:
-        req.body.rating || 4.3,
+        req.body.rating || "4.3",
 
       occasion:
         req.body.occasion || "",
@@ -61,19 +62,30 @@ router.post("/", async (req, res) => {
         req.body.description || "",
 
       discount:
-  req.body.discount || "0% OFF",
+        req.body.discount || 0,
 
-image: req.body.image,
+      // Main Image
+      image:
+        req.body.image || "",
 
-images:
-  req.body.images || [],
+      // Multiple Images
+      images:
+        req.body.images || [],
     });
 
     await product.save();
 
-    res.status(201).json(product);
+    res.status(201).json({
+      success: true,
+      product,
+    });
+
   } catch (error) {
+
+    console.log(error);
+
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -85,16 +97,20 @@ images:
 
 router.get("/", async (req, res) => {
   try {
+
     const products =
       await Product.find().sort({
         createdAt: -1,
       });
 
     res.json(products);
+
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
   }
 });
 
@@ -104,6 +120,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
+
     const product =
       await Product.findById(
         req.params.id
@@ -111,15 +128,19 @@ router.get("/:id", async (req, res) => {
 
     if (!product) {
       return res.status(404).json({
-        message: "Product Not Found",
+        message:
+          "Product Not Found",
       });
     }
 
     res.json(product);
+
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
   }
 });
 
@@ -129,10 +150,19 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
+
     const updatedProduct =
       await Product.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        {
+          ...req.body,
+
+          image:
+            req.body.image || "",
+
+          images:
+            req.body.images || [],
+        },
         {
           new: true,
         }
@@ -140,15 +170,19 @@ router.put("/:id", async (req, res) => {
 
     if (!updatedProduct) {
       return res.status(404).json({
-        message: "Product Not Found",
+        message:
+          "Product Not Found",
       });
     }
 
     res.json(updatedProduct);
+
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
   }
 });
 
@@ -158,6 +192,7 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
+
     const deletedProduct =
       await Product.findByIdAndDelete(
         req.params.id
@@ -165,7 +200,8 @@ router.delete("/:id", async (req, res) => {
 
     if (!deletedProduct) {
       return res.status(404).json({
-        message: "Product Not Found",
+        message:
+          "Product Not Found",
       });
     }
 
@@ -174,10 +210,13 @@ router.delete("/:id", async (req, res) => {
       message:
         "Product Deleted Successfully",
     });
+
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
   }
 });
 

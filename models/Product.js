@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
 
     name: {
       type: String,
@@ -60,8 +63,8 @@ const ProductSchema = new mongoose.Schema(
     },
 
     rating: {
-      type: Number,
-      default: 4.3,
+      type: String,
+      default: "4.3",
     },
 
     occasion: {

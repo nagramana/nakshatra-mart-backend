@@ -61,9 +61,12 @@ router.post("/", async (req, res) => {
         req.body.description || "",
 
       discount:
-        req.body.discount || "0% OFF",
+  req.body.discount || "0% OFF",
 
-      image: req.body.image,
+image: req.body.image,
+
+images:
+  req.body.images || [],
     });
 
     await product.save();

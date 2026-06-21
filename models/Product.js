@@ -98,13 +98,18 @@ const ProductSchema = new mongoose.Schema(
     },
 
     discount: {
-      type: String,
-      default: "0% OFF",
+      type: Number,
+      default: 0,
     },
 
     image: {
       type: String,
       required: true,
+    },
+
+    images: {
+      type: [String],
+      default: [],
     },
   },
   {

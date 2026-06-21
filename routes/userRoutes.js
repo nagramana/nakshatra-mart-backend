@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../models/User");
+const Order = require("../models/Order");
 
 // REGISTER USER
 
@@ -97,10 +98,34 @@ router.get(
   "/",
   async (req, res) => {
     try {
+
       const users =
         await User.find();
 
-      res.json(users);
+      const usersWithOrders =
+        await Promise.all(
+          users.map(
+            async (user) => {
+
+              const orderCount =
+                await Order.countDocuments({
+                  "customer.name":
+                    user.name,
+                });
+
+              return {
+                ...user._doc,
+                orders:
+                  orderCount,
+              };
+            }
+          )
+        );
+
+      res.json(
+        usersWithOrders
+      );
+
     } catch (error) {
       res.status(500).json({
         success: false,

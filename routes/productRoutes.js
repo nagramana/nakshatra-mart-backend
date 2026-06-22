@@ -1,3 +1,4 @@
+
 const express = require("express");
 const router = express.Router();
 
@@ -64,11 +65,38 @@ router.post("/", async (req, res) => {
       discount:
         req.body.discount || 0,
 
-      // Main Image
+      // ======================
+      // HOME PAGE CONTROLS
+      // ======================
+
+      showInFlashSale:
+        req.body.showInFlashSale || false,
+
+      showInTrending:
+        req.body.showInTrending || false,
+
+      showOnHomePage:
+        req.body.showOnHomePage ?? true,
+
+      featured:
+        req.body.featured || false,
+
+      bestSeller:
+        req.body.bestSeller || false,
+
+      newArrival:
+        req.body.newArrival ?? true,
+
+      displayOrder:
+        req.body.displayOrder || 0,
+
+      // ======================
+      // IMAGES
+      // ======================
+
       image:
         req.body.image || "",
 
-      // Multiple Images
       images:
         req.body.images || [],
     });
@@ -151,27 +179,33 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
 
+    const updateData = {
+      ...req.body
+    };
+
+    // Keep old image if frontend didn't send image
+    if (req.body.image === undefined) {
+      delete updateData.image;
+    }
+
+    // Keep old images if frontend didn't send images
+    if (req.body.images === undefined) {
+      delete updateData.images;
+    }
+
     const updatedProduct =
       await Product.findByIdAndUpdate(
         req.params.id,
-        {
-          ...req.body,
-
-          image:
-            req.body.image || "",
-
-          images:
-            req.body.images || [],
-        },
+        updateData,
         {
           new: true,
+          runValidators: true,
         }
       );
 
     if (!updatedProduct) {
       return res.status(404).json({
-        message:
-          "Product Not Found",
+        message: "Product Not Found",
       });
     }
 
@@ -221,3 +255,4 @@ router.delete("/:id", async (req, res) => {
 });
 
 module.exports = router;
+

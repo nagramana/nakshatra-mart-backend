@@ -13,6 +13,9 @@ const categoryRoutes = require("./routes/categoryRoutes");
 // ✅ NEW
 const adRoutes = require("./routes/adRoutes");
 
+// ✅ REVIEW ROUTE
+const reviewRoutes = require("./routes/reviewRoutes");
+
 const app = express();
 
 // ==========================
@@ -99,6 +102,12 @@ app.use(
 app.use(
   "/api/categories",
   categoryRoutes
+);
+
+// ✅ REVIEW ROUTE
+app.use(
+  "/api/reviews",
+  reviewRoutes
 );
 
 // ✅ ADS ROUTE

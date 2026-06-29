@@ -1,3 +1,4 @@
+
 const express = require("express");
 const router = express.Router();
 
@@ -435,4 +436,113 @@ router.delete(
 );
 
 
+
+// ===================================
+// Approve Payment
+// ===================================
+
+router.put(
+  "/approve-payment/:id",
+  async (req, res) => {
+    try {
+
+      const order =
+        await Order.findById(req.params.id);
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: "Order not found",
+        });
+      }
+
+      order.paymentStatus = "Paid";
+      order.orderStatus = "Confirmed";
+      order.paymentVerifiedBy =
+        req.body.admin || "Super Admin";
+      order.paymentVerifiedAt = new Date();
+
+      order.paymentLogs.push({
+        action: "Approved",
+        admin: req.body.admin || "Super Admin",
+        note: "Payment Verified",
+      });
+
+      await order.save();
+
+      res.json({
+        success: true,
+        message: "Payment Approved Successfully",
+        order,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+
+    }
+  }
+);
+
+// ===================================
+// Reject Payment
+// ===================================
+
+router.put(
+  "/reject-payment/:id",
+  async (req, res) => {
+
+    try {
+
+      const order =
+        await Order.findById(req.params.id);
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: "Order not found",
+        });
+      }
+
+      order.paymentStatus = "Rejected";
+
+      order.rejectionReason =
+        req.body.reason;
+
+      order.paymentVerifiedBy =
+        req.body.admin || "Super Admin";
+
+      order.paymentVerifiedAt =
+        new Date();
+
+      order.paymentLogs.push({
+        action: "Rejected",
+        admin: req.body.admin || "Super Admin",
+        note: req.body.reason,
+      });
+
+      await order.save();
+
+      res.json({
+        success: true,
+        message: "Payment Rejected Successfully",
+        order,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+
+    }
+
+  }
+);
+
 module.exports = router;
+

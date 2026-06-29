@@ -1,44 +1,73 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
+
+  // ===========================================
+  // ORDER ID
+  // ===========================================
+
   id: {
     type: String,
     required: true,
+    unique: true,
   },
+
+  // ===========================================
+  // CUSTOMER DETAILS
+  // ===========================================
 
   customer: {
     name: {
       type: String,
       required: true,
+      trim: true,
     },
+
     phone: {
       type: String,
       required: true,
+      trim: true,
     },
+
     address: {
       type: String,
       required: true,
+      trim: true,
     },
+
     city: {
       type: String,
       required: true,
+      trim: true,
     },
+
     state: {
       type: String,
       required: true,
+      trim: true,
     },
+
     pincode: {
       type: String,
       required: true,
+      trim: true,
     },
   },
+
+  // ===========================================
+  // PRODUCTS
+  // ===========================================
 
   items: [
     {
       id: String,
+
       name: String,
+
       image: String,
+
       price: Number,
+
       quantity: Number,
     },
   ],
@@ -48,13 +77,14 @@ const OrderSchema = new mongoose.Schema({
     required: true,
   },
 
-  // ===========================
+  // ===========================================
   // PAYMENT DETAILS
-  // ===========================
+  // ===========================================
 
   paymentMethod: {
     type: String,
-    default: "UPI",
+    enum: ["COD", "UPI"],
+    required: true,
   },
 
   paymentStatus: {
@@ -69,11 +99,7 @@ const OrderSchema = new mongoose.Schema({
 
   utrNumber: {
     type: String,
-    default: "",
-  },
-
-  paymentScreenshot: {
-    type: String,
+    trim: true,
     default: "",
   },
 
@@ -96,26 +122,29 @@ const OrderSchema = new mongoose.Schema({
     {
       action: {
         type: String,
+        required: true,
       },
 
       admin: {
         type: String,
+        required: true,
       },
 
       note: {
         type: String,
+        default: "",
       },
 
-      time: {
+      date: {
         type: Date,
         default: Date.now,
       },
     },
   ],
 
-  // ===========================
+  // ===========================================
   // ORDER STATUS
-  // ===========================
+  // ===========================================
 
   orderStatus: {
     type: String,
@@ -127,6 +156,7 @@ const OrderSchema = new mongoose.Schema({
       "Out for Delivery",
       "Delivered",
       "Cancelled",
+      "Order Returned",
     ],
     default: "Payment Verification Pending",
   },
@@ -146,9 +176,9 @@ const OrderSchema = new mongoose.Schema({
     default: [],
   },
 
-  // ===========================
+  // ===========================================
   // RETURN DETAILS
-  // ===========================
+  // ===========================================
 
   returnEligible: {
     type: Boolean,
@@ -162,6 +192,12 @@ const OrderSchema = new mongoose.Schema({
 
   returnStatus: {
     type: String,
+    enum: [
+      null,
+      "Pending",
+      "Approved",
+      "Rejected",
+    ],
     default: null,
   },
 
@@ -180,13 +216,15 @@ const OrderSchema = new mongoose.Schema({
     default: null,
   },
 
-  // ===========================
+  // ===========================================
   // REVIEW
-  // ===========================
+  // ===========================================
 
   rating: {
     type: Number,
     default: 0,
+    min: 0,
+    max: 5,
   },
 
   review: {
@@ -194,14 +232,18 @@ const OrderSchema = new mongoose.Schema({
     default: "",
   },
 
-  // ===========================
+  // ===========================================
   // CREATED DATE
-  // ===========================
+  // ===========================================
 
   createdAt: {
     type: Date,
     default: Date.now,
   },
+
 });
 
-module.exports = mongoose.model("Order", OrderSchema);
+module.exports = mongoose.model(
+  "Order",
+  OrderSchema
+);

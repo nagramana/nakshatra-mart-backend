@@ -14,7 +14,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const adRoutes = require("./routes/adRoutes");
 
 // ✅ REVIEW ROUTE
-const reviewRoutes = require("./routes/ReviewRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 console.log("✅ reviewRoutes imported");
 
 const app = express();

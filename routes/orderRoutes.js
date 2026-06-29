@@ -47,15 +47,30 @@ router.post("/", async (req, res) => {
       }
     }
 
+    
     // Save Order
-    const order = new Order(req.body);
+const order = new Order(req.body);
 
-    const savedOrder = await order.save();
+const savedOrder = await order.save();
 
-    res.status(201).json({
-      success: true,
-      order: savedOrder,
-    });
+// ===============================
+// SEND LIVE NOTIFICATION TO ADMIN
+// ===============================
+
+const io = req.app.get("io");
+
+io.emit("new-payment", {
+  title: "New Payment Request",
+  message: "A customer submitted a new UPI payment.",
+  order: savedOrder,
+});
+
+// ===============================
+
+res.status(201).json({
+  success: true,
+  order: savedOrder,
+});
 
   } catch (error) {
     console.error("Order Save Error:");
@@ -470,11 +485,25 @@ router.put(
 
       await order.save();
 
-      res.json({
-        success: true,
-        message: "Payment Approved Successfully",
-        order,
-      });
+// ===============================
+// SEND LIVE NOTIFICATION TO USER
+// ===============================
+
+const io = req.app.get("io");
+
+io.emit("payment-approved", {
+  title: "Payment Approved",
+  message: "Your payment has been approved.",
+  order,
+});
+
+// ===============================
+
+res.json({
+  success: true,
+  message: "Payment Approved Successfully",
+  order,
+});
 
     } catch (error) {
 
@@ -529,11 +558,25 @@ router.put(
 
       await order.save();
 
-      res.json({
-        success: true,
-        message: "Payment Rejected Successfully",
-        order,
-      });
+// ===============================
+// SEND LIVE NOTIFICATION TO USER
+// ===============================
+
+const io = req.app.get("io");
+
+io.emit("payment-rejected", {
+  title: "Payment Rejected",
+  message: req.body.reason,
+  order,
+});
+
+// ===============================
+
+res.json({
+  success: true,
+  message: "Payment Rejected Successfully",
+  order,
+});
 
     } catch (error) {
 

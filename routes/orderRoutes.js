@@ -2,7 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const Order = require("../models/Order");
+const validateUTR = require("../utils/validateUTR");
 
+// ===================================
+// Create Order
+// ===================================
 // ===================================
 // Create Order
 // ===================================
@@ -11,25 +15,54 @@ router.post("/", async (req, res) => {
     console.log("Incoming Order:");
     console.log(req.body);
 
+    // ===============================
+    // Validate UTR only for UPI Payment
+    // ===============================
+    if (req.body.paymentMethod === "UPI") {
+      const validation = validateUTR(req.body.utrNumber);
+
+      if (!validation.valid) {
+        return res.status(400).json({
+          success: false,
+          message: validation.message,
+        });
+      }
+
+      // ===============================
+      // Check Duplicate UTR
+      // ===============================
+      const existingUTR = await Order.findOne({
+  utrNumber: req.body.utrNumber,
+  paymentStatus: {
+    $in: ["Pending Verification", "Paid"],
+  },
+});
+
+      if (existingUTR) {
+        return res.status(400).json({
+          success: false,
+          message: "This UTR Number has already been used.",
+        });
+      }
+    }
+
+    // Save Order
     const order = new Order(req.body);
 
-    const savedOrder =
-      await order.save();
+    const savedOrder = await order.save();
 
     res.status(201).json({
       success: true,
       order: savedOrder,
     });
+
   } catch (error) {
-    console.error(
-      "Order Save Error:"
-    );
+    console.error("Order Save Error:");
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message:
-        error.message,
+      message: error.message,
       error,
     });
   }

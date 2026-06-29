@@ -1,94 +1,207 @@
 const mongoose = require("mongoose");
 
-const OrderSchema =
-  new mongoose.Schema({
-    id: String,
+const OrderSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+  },
 
-    customer: {
-      name: String,
-      phone: String,
-      address: String,
-      city: String,
-      state: String,
-      pincode: String,
+  customer: {
+    name: {
+      type: String,
+      required: true,
     },
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    pincode: {
+      type: String,
+      required: true,
+    },
+  },
 
-    items: [
-      {
-        id: String,
-        name: String,
-        image: String,
-        price: Number,
-        quantity: Number,
-      },
+  items: [
+    {
+      id: String,
+      name: String,
+      image: String,
+      price: Number,
+      quantity: Number,
+    },
+  ],
+
+  total: {
+    type: Number,
+    required: true,
+  },
+
+  // ===========================
+  // PAYMENT DETAILS
+  // ===========================
+
+  paymentMethod: {
+    type: String,
+    default: "UPI",
+  },
+
+  paymentStatus: {
+    type: String,
+    enum: [
+      "Pending Verification",
+      "Paid",
+      "Rejected",
     ],
+    default: "Pending Verification",
+  },
 
-    total: Number,
+  utrNumber: {
+    type: String,
+    default: "",
+  },
 
-    paymentMethod: String,
+  paymentScreenshot: {
+    type: String,
+    default: "",
+  },
 
-   orderStatus: {
-  type: String,
-  default: "Order Placed",
-},
+  paymentVerifiedBy: {
+    type: String,
+    default: "",
+  },
 
-progress: {
-  type: Number,
-  default: 25,
-},
+  paymentVerifiedAt: {
+    type: Date,
+    default: null,
+  },
 
-deliveredAt: {
-  type: Date,
-  default: null,
-},
+  rejectionReason: {
+    type: String,
+    default: "",
+  },
 
-trackingSteps: [String],
+  paymentLogs: [
+    {
+      action: {
+        type: String,
+      },
 
-    returnEligible: {
-  type: Boolean,
-  default: true,
-},
+      admin: {
+        type: String,
+      },
 
-returnRequested: {
-  type: Boolean,
-  default: false,
-},
+      note: {
+        type: String,
+      },
 
-returnStatus: {
-  type: String,
-  default: null,
-},
+      time: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 
-returnReason: String,
+  // ===========================
+  // ORDER STATUS
+  // ===========================
 
-returnRequestedAt: {
-  type: Date,
-  default: null,
-},
+  orderStatus: {
+    type: String,
+    enum: [
+      "Payment Verification Pending",
+      "Order Placed",
+      "Processing",
+      "Shipped",
+      "Out for Delivery",
+      "Delivered",
+      "Cancelled",
+    ],
+    default: "Payment Verification Pending",
+  },
 
-returnActionAt: {
-  type: Date,
-  default: null,
-},
+  progress: {
+    type: Number,
+    default: 25,
+  },
 
-rating: {
-  type: Number,
-  default: 0,
-},
+  deliveredAt: {
+    type: Date,
+    default: null,
+  },
 
-review: {
-  type: String,
-  default: "",
-},
+  trackingSteps: {
+    type: [String],
+    default: [],
+  },
 
-createdAt: {
-  type: Date,
-  default: Date.now,
-},
-  });
+  // ===========================
+  // RETURN DETAILS
+  // ===========================
 
-module.exports =
-  mongoose.model(
-    "Order",
-    OrderSchema
-  );
+  returnEligible: {
+    type: Boolean,
+    default: true,
+  },
+
+  returnRequested: {
+    type: Boolean,
+    default: false,
+  },
+
+  returnStatus: {
+    type: String,
+    default: null,
+  },
+
+  returnReason: {
+    type: String,
+    default: "",
+  },
+
+  returnRequestedAt: {
+    type: Date,
+    default: null,
+  },
+
+  returnActionAt: {
+    type: Date,
+    default: null,
+  },
+
+  // ===========================
+  // REVIEW
+  // ===========================
+
+  rating: {
+    type: Number,
+    default: 0,
+  },
+
+  review: {
+    type: String,
+    default: "",
+  },
+
+  // ===========================
+  // CREATED DATE
+  // ===========================
+
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+module.exports = mongoose.model("Order", OrderSchema);

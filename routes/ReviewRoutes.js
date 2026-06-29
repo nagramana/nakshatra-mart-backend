@@ -36,6 +36,9 @@ router.get("/:productId", async (req, res) => {
 
 router.post("/", async (req, res) => {
 
+  console.log("========== REVIEW POST ==========");
+console.log(req.body);
+
   try {
 
     const {

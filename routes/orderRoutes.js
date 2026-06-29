@@ -33,11 +33,11 @@ router.post("/", async (req, res) => {
       // Check Duplicate UTR
       // ===============================
       const existingUTR = await Order.findOne({
-  utrNumber: req.body.utrNumber,
-  paymentStatus: {
-    $in: ["Pending Verification", "Paid"],
-  },
-});
+        utrNumber: req.body.utrNumber,
+        paymentStatus: {
+          $in: ["Pending Verification", "Paid"],
+        },
+      });
 
       if (existingUTR) {
         return res.status(400).json({
@@ -457,7 +457,7 @@ router.put(
       }
 
       order.paymentStatus = "Paid";
-order.orderStatus = "Processing";
+      order.orderStatus = "Ordered";
       order.paymentVerifiedBy =
         req.body.admin || "Super Admin";
       order.paymentVerifiedAt = new Date();
@@ -478,15 +478,15 @@ order.orderStatus = "Processing";
 
     } catch (error) {
 
-  console.error("APPROVE PAYMENT ERROR:");
-  console.error(error);
+      console.error("APPROVE PAYMENT ERROR:");
+      console.error(error);
 
-  res.status(500).json({
-    success: false,
-    message: error.message,
-  });
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
 
-}
+    }
   }
 );
 

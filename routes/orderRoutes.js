@@ -457,7 +457,7 @@ router.put(
       }
 
       order.paymentStatus = "Paid";
-      order.orderStatus = "Confirmed";
+order.orderStatus = "Processing";
       order.paymentVerifiedBy =
         req.body.admin || "Super Admin";
       order.paymentVerifiedAt = new Date();
@@ -478,12 +478,15 @@ router.put(
 
     } catch (error) {
 
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      });
+  console.error("APPROVE PAYMENT ERROR:");
+  console.error(error);
 
-    }
+  res.status(500).json({
+    success: false,
+    message: error.message,
+  });
+
+}
   }
 );
 
